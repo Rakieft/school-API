@@ -1,0 +1,218 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "School API",
+    "description": "API for managing students and courses",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8080",
+  "schemes": ["http"],
+  "paths": {
+    "/students": {
+      "get": {
+        "summary": "Get all students",
+        "responses": {
+          "200": {
+            "description": "List of students",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Student" }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new student",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "student",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Student" }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Student created" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/students/{id}": {
+      "get": {
+        "summary": "Get a student by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Student found" },
+          "404": { "description": "Student not found" }
+        }
+      },
+      "put": {
+        "summary": "Update a student",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "student",
+            "schema": { "$ref": "#/definitions/Student" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Student updated" },
+          "404": { "description": "Student not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a student",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Student deleted" },
+          "404": { "description": "Student not found" }
+        }
+      }
+    },
+
+    "/courses": {
+      "get": {
+        "summary": "Get all courses",
+        "responses": {
+          "200": {
+            "description": "List of courses",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Course" }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new course",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "course",
+            "required": true,
+            "schema": { "$ref": "#/definitions/Course" }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Course created" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/courses/{id}": {
+      "get": {
+        "summary": "Get a course by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Course found" },
+          "404": { "description": "Course not found" }
+        }
+      },
+      "put": {
+        "summary": "Update a course",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "course",
+            "schema": { "$ref": "#/definitions/Course" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Course updated" },
+          "404": { "description": "Course not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a course",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Course deleted" },
+          "404": { "description": "Course not found" }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "Student": {
+      "type": "object",
+      "required": [
+        "firstName",
+        "lastName",
+        "email",
+        "age",
+        "course",
+        "gpa",
+        "enrollmentDate"
+      ],
+      "properties": {
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "email": { "type": "string" },
+        "age": { "type": "number" },
+        "course": { "type": "string" },
+        "gpa": { "type": "number" },
+        "enrollmentDate": { "type": "string" }
+      }
+    },
+    "Course": {
+      "type": "object",
+      "required": [
+        "title",
+        "code",
+        "teacher",
+        "credits",
+        "schedule",
+        "room"
+      ],
+      "properties": {
+        "title": { "type": "string" },
+        "code": { "type": "string" },
+        "teacher": { "type": "string" },
+        "credits": { "type": "number" },
+        "schedule": { "type": "string" },
+        "room": { "type": "string" }
+      }
+    }
+  }
+}
