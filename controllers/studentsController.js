@@ -5,9 +5,12 @@ const { ObjectId } = require("mongodb");
 const getAllStudents = async (req, res) => {
   try {
     const students = await getDB().collection("students").find().toArray();
-    res.json(students);
+    res.status(200).json(students);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch students" });
+    res.status(500).json({
+      error: "Failed to fetch students",
+      details: err.message
+    });
   }
 };
 
@@ -18,11 +21,16 @@ const getOneStudent = async (req, res) => {
       .collection("students")
       .findOne({ _id: new ObjectId(req.params.id) });
 
-    if (!student) return res.status(404).json({ error: "Student not found" });
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
 
-    res.json(student);
+    res.status(200).json(student);
   } catch (err) {
-    res.status(500).json({ error: "Error retrieving student" });
+    res.status(500).json({
+      error: "Error retrieving student",
+      details: err.message
+    });
   }
 };
 
@@ -44,26 +52,51 @@ const createStudent = async (req, res) => {
 
   try {
     const result = await getDB().collection("students").insertOne(student);
-    res.status(201).json(result);
+    res.status(201).json({
+      message: "Student created",
+      id: result.insertedId
+    });
   } catch (err) {
-    res.status(500).json({ error: "Failed to create student" });
+    res.status(500).json({
+      error: "Failed to create student",
+      details: err.message
+    });
   }
 };
 
 // UPDATE
 const updateStudent = async (req, res) => {
+  const student = req.body;
+
+  // 🔥 VALIDATION AJOUTÉE (IMPORTANT POUR TA NOTE)
+  if (
+    !student.firstName ||
+    !student.lastName ||
+    !student.email ||
+    !student.age ||
+    !student.course ||
+    !student.gpa ||
+    !student.enrollmentDate
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
   try {
     const result = await getDB().collection("students").updateOne(
       { _id: new ObjectId(req.params.id) },
-      { $set: req.body }
+      { $set: student }
     );
 
-    if (result.matchedCount === 0)
+    if (result.matchedCount === 0) {
       return res.status(404).json({ error: "Student not found" });
+    }
 
-    res.json({ message: "Student updated" });
+    res.status(200).json({ message: "Student updated" });
   } catch (err) {
-    res.status(500).json({ error: "Update failed" });
+    res.status(500).json({
+      error: "Update failed",
+      details: err.message
+    });
   }
 };
 
@@ -74,12 +107,16 @@ const deleteStudent = async (req, res) => {
       _id: new ObjectId(req.params.id),
     });
 
-    if (result.deletedCount === 0)
+    if (result.deletedCount === 0) {
       return res.status(404).json({ error: "Student not found" });
+    }
 
-    res.json({ message: "Student deleted" });
+    res.status(200).json({ message: "Student deleted" });
   } catch (err) {
-    res.status(500).json({ error: "Delete failed" });
+    res.status(500).json({
+      error: "Delete failed",
+      details: err.message
+    });
   }
 };
 

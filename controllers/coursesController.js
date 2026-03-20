@@ -5,9 +5,12 @@ const { ObjectId } = require("mongodb");
 const getAllCourses = async (req, res) => {
   try {
     const courses = await getDB().collection("courses").find().toArray();
-    res.json(courses);
+    res.status(200).json(courses);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch courses" });
+    res.status(500).json({
+      error: "Failed to fetch courses",
+      details: err.message
+    });
   }
 };
 
@@ -18,11 +21,16 @@ const getOneCourse = async (req, res) => {
       .collection("courses")
       .findOne({ _id: new ObjectId(req.params.id) });
 
-    if (!course) return res.status(404).json({ error: "Course not found" });
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
 
-    res.json(course);
+    res.status(200).json(course);
   } catch (err) {
-    res.status(500).json({ error: "Error retrieving course" });
+    res.status(500).json({
+      error: "Error retrieving course",
+      details: err.message
+    });
   }
 };
 
@@ -43,26 +51,50 @@ const createCourse = async (req, res) => {
 
   try {
     const result = await getDB().collection("courses").insertOne(course);
-    res.status(201).json(result);
+    res.status(201).json({
+      message: "Course created",
+      id: result.insertedId
+    });
   } catch (err) {
-    res.status(500).json({ error: "Failed to create course" });
+    res.status(500).json({
+      error: "Failed to create course",
+      details: err.message
+    });
   }
 };
 
 // UPDATE
 const updateCourse = async (req, res) => {
+  const course = req.body;
+
+  // 🔥 VALIDATION AJOUTÉE
+  if (
+    !course.title ||
+    !course.code ||
+    !course.teacher ||
+    !course.credits ||
+    !course.schedule ||
+    !course.room
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
   try {
     const result = await getDB().collection("courses").updateOne(
       { _id: new ObjectId(req.params.id) },
-      { $set: req.body }
+      { $set: course }
     );
 
-    if (result.matchedCount === 0)
+    if (result.matchedCount === 0) {
       return res.status(404).json({ error: "Course not found" });
+    }
 
-    res.json({ message: "Course updated" });
+    res.status(200).json({ message: "Course updated" });
   } catch (err) {
-    res.status(500).json({ error: "Update failed" });
+    res.status(500).json({
+      error: "Update failed",
+      details: err.message
+    });
   }
 };
 
@@ -73,12 +105,16 @@ const deleteCourse = async (req, res) => {
       _id: new ObjectId(req.params.id),
     });
 
-    if (result.deletedCount === 0)
+    if (result.deletedCount === 0) {
       return res.status(404).json({ error: "Course not found" });
+    }
 
-    res.json({ message: "Course deleted" });
+    res.status(200).json({ message: "Course deleted" });
   } catch (err) {
-    res.status(500).json({ error: "Delete failed" });
+    res.status(500).json({
+      error: "Delete failed",
+      details: err.message
+    });
   }
 };
 
