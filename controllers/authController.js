@@ -11,7 +11,7 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ error: "All fields required" });
     }
 
-    // Vérifier si utilisateur existe déjà
+    // 
     const existingUser = await getDB()
       .collection("users")
       .findOne({ email });
@@ -55,7 +55,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // 🔥 IMPORTANT : utiliser le même secret que middleware
+    //  IMPORTANT 
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET,

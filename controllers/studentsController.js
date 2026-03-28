@@ -68,7 +68,7 @@ const createStudent = async (req, res) => {
 const updateStudent = async (req, res) => {
   const student = req.body;
 
-  // 🔥 VALIDATION AJOUTÉE (IMPORTANT POUR TA NOTE)
+  // 🔥 VALIDATION added
   if (
     !student.firstName ||
     !student.lastName ||

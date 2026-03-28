@@ -67,7 +67,7 @@ const createCourse = async (req, res) => {
 const updateCourse = async (req, res) => {
   const course = req.body;
 
-  // 🔥 VALIDATION AJOUTÉE
+  // 🔥 VALIDATION added
   if (
     !course.title ||
     !course.code ||
