@@ -18,6 +18,7 @@ connectDB();
 // Routes
 app.use("/students", require("./routes/studentsRoutes"));
 app.use("/courses", require("./routes/coursesRoutes"));
+app.use("/auth", require("./routes/authRoutes"));
 
 // Swagger 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));

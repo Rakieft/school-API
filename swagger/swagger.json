@@ -2,12 +2,70 @@
   "swagger": "2.0",
   "info": {
     "title": "School API",
-    "description": "API for managing students and courses",
+    "description": "API for managing students and courses with authentication",
     "version": "1.0.0"
   },
   "host": "localhost:8080",
   "schemes": ["http"],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter token as: Bearer YOUR_TOKEN"
+    }
+  },
   "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["username", "email", "password"],
+              "properties": {
+                "username": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "User created" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login a user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "credentials",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["email", "password"],
+              "properties": {
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Returns JWT token" },
+          "400": { "description": "Invalid credentials" }
+        }
+      }
+    },
+
     "/students": {
       "get": {
         "summary": "Get all students",
@@ -23,6 +81,7 @@
       },
       "post": {
         "summary": "Create a new student",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "body",
@@ -33,20 +92,17 @@
         ],
         "responses": {
           "201": { "description": "Student created" },
-          "400": { "description": "Invalid input" }
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" }
         }
       }
     },
+
     "/students/{id}": {
       "get": {
         "summary": "Get a student by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
           "200": { "description": "Student found" },
@@ -55,36 +111,27 @@
       },
       "put": {
         "summary": "Update a student",
+        "security": [{ "Bearer": [] }],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "student",
-            "schema": { "$ref": "#/definitions/Student" }
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          { "in": "body", "name": "student", "schema": { "$ref": "#/definitions/Student" } }
         ],
         "responses": {
           "200": { "description": "Student updated" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" },
           "404": { "description": "Student not found" }
         }
       },
       "delete": {
         "summary": "Delete a student",
+        "security": [{ "Bearer": [] }],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
           "200": { "description": "Student deleted" },
+          "401": { "description": "Unauthorized" },
           "404": { "description": "Student not found" }
         }
       }
@@ -105,6 +152,7 @@
       },
       "post": {
         "summary": "Create a new course",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "body",
@@ -115,20 +163,17 @@
         ],
         "responses": {
           "201": { "description": "Course created" },
-          "400": { "description": "Invalid input" }
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" }
         }
       }
     },
+
     "/courses/{id}": {
       "get": {
         "summary": "Get a course by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
           "200": { "description": "Course found" },
@@ -137,36 +182,27 @@
       },
       "put": {
         "summary": "Update a course",
+        "security": [{ "Bearer": [] }],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "course",
-            "schema": { "$ref": "#/definitions/Course" }
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          { "in": "body", "name": "course", "schema": { "$ref": "#/definitions/Course" } }
         ],
         "responses": {
           "200": { "description": "Course updated" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" },
           "404": { "description": "Course not found" }
         }
       },
       "delete": {
         "summary": "Delete a course",
+        "security": [{ "Bearer": [] }],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
           "200": { "description": "Course deleted" },
+          "401": { "description": "Unauthorized" },
           "404": { "description": "Course not found" }
         }
       }
@@ -176,15 +212,7 @@
   "definitions": {
     "Student": {
       "type": "object",
-      "required": [
-        "firstName",
-        "lastName",
-        "email",
-        "age",
-        "course",
-        "gpa",
-        "enrollmentDate"
-      ],
+      "required": ["firstName", "lastName", "email", "age", "course", "gpa", "enrollmentDate"],
       "properties": {
         "firstName": { "type": "string" },
         "lastName": { "type": "string" },
@@ -197,14 +225,7 @@
     },
     "Course": {
       "type": "object",
-      "required": [
-        "title",
-        "code",
-        "teacher",
-        "credits",
-        "schedule",
-        "room"
-      ],
+      "required": ["title", "code", "teacher", "credits", "schedule", "room"],
       "properties": {
         "title": { "type": "string" },
         "code": { "type": "string" },
